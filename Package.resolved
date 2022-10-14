@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "playdate",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/noppefoxwolf/Playdate",
+      "state" : {
+        "revision" : "167782ed06aa8361216d7b34c7930a8f3aceb8c8",
+        "version" : "1.12.3"
+      }
+    }
+  ],
+  "version" : 2
+}
