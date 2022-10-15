@@ -88,7 +88,6 @@ public struct System {
             return MenuItem(ptr)
         }
     }
-//    PDMenuItem* (*addOptionsMenuItem)(const char *title, const char** optionTitles, int optionsCount, PDMenuItemCallbackFunction* f, void* userdata);
     
     public func removeAllMenuItems() {
         system.removeAllMenuItems()

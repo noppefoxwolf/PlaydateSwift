@@ -5,7 +5,7 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/noppefoxwolf/Playdate",
       "state" : {
-        "revision" : "167782ed06aa8361216d7b34c7930a8f3aceb8c8",
+        "revision" : "c4830310a6bc18b3516e225b0f2dab4ffd384205",
         "version" : "1.12.3"
       }
     }

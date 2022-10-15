@@ -1,22 +1,16 @@
 import CPlaydate
 
 open class App {
-    public let playdate: PlaydateAPI
-    public let system: System
-    public let display: Display
-    public let graphics: Graphics
+    public let api: API
     
     public init(playdate: PlaydateAPI) {
-        self.playdate = playdate
-        self.system = System(system: playdate.system.pointee)
-        self.display = Display(display: playdate.display.pointee)
-        self.graphics = Graphics(graphics: playdate.graphics.pointee)
+        api = API(playdate: playdate)
         playdate.system.pointee.setUpdateCallback(_update, nil)
     }
     
     @discardableResult
     open func update() -> Bool {
-        onPushedButton(system.pushedButtonState)
+        onPushedButton(api.system.pushedButtonState)
         return true
     }
     
