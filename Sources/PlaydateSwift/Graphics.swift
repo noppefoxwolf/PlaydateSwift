@@ -96,8 +96,20 @@ extension Graphics {
         return Image(ptr)
     }
     
-    public func drawImage(_ image: Image, point: Point<Int32>) {
-        graphics.drawBitmap(image.ptr, point.x, point.y, LCDBitmapFlip(0))
+    public func drawImage(_ image: Image, point: Point<Int32> = .zero, flip: BitmapFlip = .unflipped) {
+        graphics.drawBitmap(image.ptr, point.x, point.y, LCDBitmapFlip(flip.cValue))
+    }
+    
+    public func clear(_ image: Image, color: Color) {
+        graphics.clearBitmap(image.ptr, .init(color.cValue))
+    }
+    
+    public func drawScaledImage(_ image: Image, point: Point<Int32>, scaleX: Float, scaleY: Float) {
+        graphics.drawScaledBitmap(image.ptr, point.x, point.y, scaleX, scaleY)
+    }
+    
+    public func drawRotatedImage(_ image: Image, point: Point<Int32>, rotation: Float, centerX: Float, centery: Float, xScale: Float, yScale: Float) {
+        graphics.drawRotatedBitmap(image.ptr, point.x, point.y, rotation, centery, centery, xScale, yScale)
     }
 }
 

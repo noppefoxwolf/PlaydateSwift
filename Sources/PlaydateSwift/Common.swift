@@ -20,6 +20,10 @@ public struct Rect<Value> {
         self.size = size
     }
     
+    public init(x: Value, y: Value, width: Value, height: Value) {
+        self.init(point: Point<Value>(x: x, y: y), size: Size<Value>(width: width, height: height))
+    }
+    
     public let point: Point<Value>
     public let size: Size<Value>
 }
@@ -77,6 +81,21 @@ public enum Color: Int {
   }
 }
 
+public enum BitmapFlip: Int {
+    case unflipped
+    case flippedX
+    case flippedY
+    case flippedXY
+    
+    init(_ bitmapFlip: LCDBitmapFlip) {
+        self.init(rawValue: Int(bitmapFlip.rawValue))!
+    }
+
+    internal var cValue: UInt32 {
+      UInt32(self.rawValue)
+    }
+}
+
 public enum LineCapStyle {
   case butt
   case square
@@ -113,6 +132,14 @@ public struct Button: OptionSet {
 }
 
 open class Image {
+    let ptr: OpaquePointer?
+    
+    init(_ ptr: OpaquePointer?) {
+      self.ptr = ptr
+    }
+}
+
+open class MenuItem {
     let ptr: OpaquePointer?
     
     init(_ ptr: OpaquePointer?) {
