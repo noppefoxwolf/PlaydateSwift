@@ -125,6 +125,10 @@ public struct System {
     public func drawFPS(point: Point<Int32>) {
         system.drawFPS(point.x, point.y)
     }
+    
+    public func lua() {
+        
+    }
 }
 
 

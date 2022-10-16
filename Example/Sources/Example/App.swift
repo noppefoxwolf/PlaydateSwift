@@ -35,7 +35,11 @@ final class App: PlaydateSwift.App {
     }
     
     override func onPushedBButton() {
-        let image = try! api.graphics.loadImage(path: "background")
-        api.graphics.drawImage(image)
+        do {
+            let image = try api.graphics.loadImage(path: "background")
+            api.graphics.drawImage(image)
+        } catch let error as CError {
+            api.logToConsole(message: error.description)
+        } catch {}
     }
 }

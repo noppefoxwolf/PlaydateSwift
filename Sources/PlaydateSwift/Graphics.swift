@@ -91,8 +91,12 @@ extension Graphics {
     }
     
     public func loadImage(path: String) throws -> Image {
-        // TODO: Handle Error
-        let ptr = graphics.loadBitmap(path, nil)
+        var outerr: UnsafePointer<CChar>? = nil
+        let ptr = graphics.loadBitmap(path, &outerr)
+        if let outerr {
+            let err = String(cString: outerr)
+            throw CError(err: err)
+        }
         return Image(ptr)
     }
     

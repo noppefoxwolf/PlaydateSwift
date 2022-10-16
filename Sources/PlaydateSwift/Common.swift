@@ -139,10 +139,35 @@ open class Image {
     }
 }
 
+open class Sprite {
+    let ptr: OpaquePointer?
+    
+    init(_ ptr: OpaquePointer?) {
+      self.ptr = ptr
+    }
+}
+
 open class MenuItem {
     let ptr: OpaquePointer?
     
     init(_ ptr: OpaquePointer?) {
       self.ptr = ptr
     }
+}
+
+public enum SystemEvent: Int {
+  case initialize = 0
+  case initializeLua
+  case lock
+  case unlock
+  case pause
+  case resume
+  case terminate
+  case keyPressed
+  case keyReleased
+  case lowPower
+
+  public init(_ event: PDSystemEvent) {
+    self.init(rawValue: Int(event.rawValue))!
+  }
 }

@@ -5,7 +5,7 @@ open class App {
     
     public init(playdate: PlaydateAPI) {
         api = API(playdate: playdate)
-        playdate.system.pointee.setUpdateCallback(_update, nil)
+        api.playdate.system.pointee.setUpdateCallback(_update, nil)
     }
     
     @discardableResult
