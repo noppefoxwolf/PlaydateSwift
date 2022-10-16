@@ -1,7 +1,11 @@
 import CPlaydate
 
-public struct LuaAPI {
+public class LuaAPI {
     public let api: playdate_lua
+    
+    init(api: playdate_lua) {
+        self.api = api
+    }
     
     public func addFunction(
         name: String,
@@ -90,9 +94,9 @@ public struct LuaAPI {
         return Image(ptr)
     }
     
-    public func getSprite(pos: Int32) -> LCDSprite {
+    public func getSprite(pos: Int32) -> Sprite {
         let ptr = api.getSprite(pos)
-        return LCDSprite(ptr)
+        return Sprite(ptr)
     }
     
     
@@ -125,7 +129,7 @@ public struct LuaAPI {
         //lua.pushBitmap(LCDBitmap(image.ptr))
     }
     
-    public func pushSprite(_ sprite: LCDSprite) {
+    public func pushSprite(_ sprite: Sprite) {
         fatalError()
         //lua.pushSprite(LCDSprite(sprite.ptr))
     }

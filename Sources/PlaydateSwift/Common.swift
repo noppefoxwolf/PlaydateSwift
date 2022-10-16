@@ -77,19 +77,19 @@ extension Size where Value == UInt32 {
 }
 
 public enum Color: Int {
-  case black = 0
-  case white
-  case clear
-  case xor // TODO: better name
-  case pattern // TODO: should be take assc value
-
-  init(_ lcdColor: LCDSolidColor) {
-    self.init(rawValue: Int(lcdColor.rawValue))!
-  }
-
-  internal var cValue: UInt32 {
-    UInt32(self.rawValue)
-  }
+    case black = 0
+    case white
+    case clear
+    case xor // TODO: better name
+    case pattern // TODO: should be take assc value
+    
+    init(_ lcdColor: LCDSolidColor) {
+        self.init(rawValue: Int(lcdColor.rawValue))!
+    }
+    
+    internal var cValue: UInt32 {
+        UInt32(self.rawValue)
+    }
 }
 
 public enum BitmapFlip: Int {
@@ -101,27 +101,27 @@ public enum BitmapFlip: Int {
     init(_ bitmapFlip: LCDBitmapFlip) {
         self.init(rawValue: Int(bitmapFlip.rawValue))!
     }
-
+    
     internal var cValue: UInt32 {
-      UInt32(self.rawValue)
+        UInt32(self.rawValue)
     }
 }
 
 public enum LineCapStyle {
-  case butt
-  case square
-  case round
-
-  internal var cStyle: LCDLineCapStyle {
-    switch self {
-    case .butt:
-      return kLineCapStyleButt
-    case .square:
-      return kLineCapStyleSquare
-    case .round:
-      return kLineCapStyleRound
+    case butt
+    case square
+    case round
+    
+    internal var cStyle: LCDLineCapStyle {
+        switch self {
+        case .butt:
+            return kLineCapStyleButt
+        case .square:
+            return kLineCapStyleSquare
+        case .round:
+            return kLineCapStyleRound
+        }
     }
-  }
 }
 
 public struct Button: OptionSet {
@@ -142,43 +142,80 @@ public struct Button: OptionSet {
     public static let a       = Button(rawValue: 1 << 5)
 }
 
-open class Image {
-    let ptr: OpaquePointer?
-    
-    init(_ ptr: OpaquePointer?) {
-      self.ptr = ptr
-    }
-}
-
-open class LCDSprite {
-    let ptr: OpaquePointer?
-    
-    init(_ ptr: OpaquePointer?) {
-      self.ptr = ptr
-    }
-}
-
-open class MenuItem {
-    let ptr: OpaquePointer?
-    
-    init(_ ptr: OpaquePointer?) {
-      self.ptr = ptr
-    }
-}
+open class Image: Object {}
+open class Sprite: Object {}
+open class MenuItem: Object {}
 
 public enum SystemEvent: Int {
-  case initialize = 0
-  case initializeLua
-  case lock
-  case unlock
-  case pause
-  case resume
-  case terminate
-  case keyPressed
-  case keyReleased
-  case lowPower
+    case initialize = 0
+    case initializeLua
+    case lock
+    case unlock
+    case pause
+    case resume
+    case terminate
+    case keyPressed
+    case keyReleased
+    case lowPower
+    
+    public init(_ event: PDSystemEvent) {
+        self.init(rawValue: Int(event.rawValue))!
+    }
+}
 
-  public init(_ event: PDSystemEvent) {
-    self.init(rawValue: Int(event.rawValue))!
-  }
+public enum BitmapDrawMode: Int {
+    case copy
+    case whiteTransparent
+    case blackTransparent
+    case fillWhite
+    case fillBlack
+    case xOR
+    case nXOR
+    case inverted
+    
+    public init(_ mode: LCDBitmapDrawMode) {
+        self.init(rawValue: Int(mode.rawValue))!
+    }
+    
+    internal var cValue: UInt32 {
+        UInt32(rawValue)
+    }
+}
+
+public enum StringEncoding: Int {
+    case ascii
+    case utf8
+    case _16bitLE
+    
+    public init(_ encoding: PDStringEncoding) {
+        self.init(rawValue: Int(encoding.rawValue))!
+    }
+    
+    internal var cValue: UInt32 {
+        UInt32(rawValue)
+    }
+}
+
+open class Object {
+    let ptr: OpaquePointer?
+    
+    init(_ ptr: OpaquePointer?) {
+        self.ptr = ptr
+    }
+}
+
+open class Font: Object {}
+
+public enum Language: Int {
+    case english
+    case japanese
+    case unknown
+    
+    public init(_ language: PDLanguage) {
+        self.init(rawValue: Int(language.rawValue))!
+    }
+    
+    internal var cValue: UInt32 {
+        UInt32(rawValue)
+    }
 }

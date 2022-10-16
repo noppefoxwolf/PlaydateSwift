@@ -1,7 +1,11 @@
 import CPlaydate
 
-public struct SystemAPI {
+public class SystemAPI {
     public let api: playdate_sys
+    
+    init(api: playdate_sys) {
+        self.api = api
+    }
     
     public var currentButtonState: Button {
         var buttons = PDButtons(rawValue: .max)
@@ -124,10 +128,6 @@ public struct SystemAPI {
     
     public func drawFPS(point: Point<Int32>) {
         api.drawFPS(point.x, point.y)
-    }
-    
-    public func lua() {
-        
     }
 }
 

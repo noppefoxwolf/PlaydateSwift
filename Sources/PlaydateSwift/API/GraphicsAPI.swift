@@ -1,8 +1,12 @@
 import CPlaydate
 
-public struct GraphicsAPI {
+public class GraphicsAPI {
     public let api: playdate_graphics
     
+    init(api: playdate_graphics) {
+        self.api = api
+    }
+
     public func drawLine(
         from: Point<Int32>,
         to: Point<Int32>,
@@ -117,3 +121,23 @@ extension GraphicsAPI {
     }
 }
 
+// Fonts & Text
+extension GraphicsAPI {
+    @discardableResult
+    public func drawText(_ text: String, encoding: StringEncoding = .utf8, at point: Point<Int32>) -> Int32 {
+        api.drawText(
+            text,
+            text.count,
+            PDStringEncoding(encoding.cValue),
+            point.x,
+            point.y
+        )
+    }
+}
+
+// Miscellaneous
+extension GraphicsAPI {
+    public func clear(_ color: Color) {
+        api.clear(.init(color.cValue))
+    }
+}

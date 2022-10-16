@@ -4,6 +4,7 @@ import CPlaydate
 final class App: PlaydateSwift.App {
     override init(playdate: PlaydateAPI) {
         super.init(playdate: playdate)
+        api.display.refreshRate = 1
         api.system.drawFPS(point: Point<Int32>(x: 0, y: 0))
         setupButtons()
     }
@@ -26,6 +27,8 @@ final class App: PlaydateSwift.App {
     
     override func update() -> Bool {
         super.update()
+        api.graphics.clear(.white)
+        api.graphics.drawText("Hello, World! \(api.system.elapsedTime)", at: .init(x: 64, y: 64))
         return true
     }
     

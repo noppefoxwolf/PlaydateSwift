@@ -1,8 +1,12 @@
 import CPlaydate
 
 // https://sdk.play.date/1.12.3/#M-display
-public struct DisplayAPI {
+public class DisplayAPI {
     public let api: playdate_display
+    
+    init(api: playdate_display) {
+        self.api = api
+    }
     
     public var refreshRate: Int = 30 {
         didSet {
