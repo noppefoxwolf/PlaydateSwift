@@ -2,12 +2,12 @@ import PlaydateSwift
 import CPlaydate
 
 @_dynamicReplacement(for: EventCallback(playdate:event:))
-func eventCallback(playdate: PlaydateAPI, event: PDSystemEvent) {
-    let event = SystemEvent(event)
+func eventCallback(playdate: PlaydateAPI, event: SystemEvent) {
     switch event {
     case .initialize:
         app = App(playdate: playdate)
-        app.api.logToConsole(message: "initialize")
+    case .initializeLua:
+        app.setupLua()
     default:
         break
     }

@@ -9,7 +9,7 @@ public class LuaAPI {
     
     public func addFunction(
         name: String,
-        function: (@convention(c) (UnsafeMutablePointer<lua_State?>?) -> Int32)?
+        function: (@convention(c) (UnsafeMutablePointer<lua_State?>?) -> CInt)?
     ) throws {
         var outerr: UnsafePointer<CChar>? = nil
         let _ = api.addFunction(function, name, &outerr)
@@ -21,22 +21,23 @@ public class LuaAPI {
         }
     }
     
-    public func callFunction(name: String) throws {
+    public func callFunction(name: String) throws -> CInt {
         var outerr: UnsafePointer<CChar>? = nil
         // TODO: set args
-        let nargs: Int32 = 0
-        let _ = api.callFunction(name, nargs, &outerr)
+        let nargs: CInt = 0
+        let result = api.callFunction(name, nargs, &outerr)
         if let outerr {
             let err = String(cString: outerr)
             throw CError(err: err)
         }
+        return result
     }
     
-    public func pushFunction(_ function: (@convention(c) (UnsafeMutablePointer<lua_State?>?) -> Int32)?) {
+    public func pushFunction(_ function: (@convention(c) (UnsafeMutablePointer<lua_State?>?) -> CInt)?) {
         api.pushFunction(function)
     }
     
-    public func indexMetatable() -> Int32 {
+    public func indexMetatable() -> CInt {
         api.indexMetatable()
     }
     
@@ -48,53 +49,53 @@ public class LuaAPI {
         api.start()
     }
     
-    public func getArgCount() -> Int32 {
+    public func getArgCount() -> CInt {
         api.getArgCount()
     }
     
-    public func getArgType(pos: Int32) -> LuaType {
+    public func getArgType(pos: CInt) -> LuaType {
         var outClass: UnsafePointer<CChar>? = nil
         return api.getArgType(pos, &outClass)
     }
     
-    public func argIsNil(pos: Int32) -> Bool {
-        api.argIsNil(pos) == 1
+    public func argIsNil(pos: CInt) -> Bool {
+        api.argIsNil(pos).toBool()
     }
     
-    public func getArgBool(pos: Int32) -> Bool {
-        api.getArgBool(pos) == 1
+    public func getArgBool(pos: CInt) -> Bool {
+        api.getArgBool(pos).toBool()
     }
     
-    public func getArgInt(pos: Int32) -> Int32 {
+    public func getArgInt(pos: CInt) -> CInt {
         api.getArgInt(pos)
     }
     
-    public func getArgFloat(pos: Int32) -> Float {
+    public func getArgFloat(pos: CInt) -> Float {
         api.getArgFloat(pos)
     }
     
-    public func getArgString(pos: Int32) -> String {
+    public func getArgString(pos: CInt) -> String {
         String(cString: api.getArgString(pos)!)
     }
     
-    public func getArgBytes(pos: Int32) -> (ptr: UnsafePointer<CChar>?, len: size_t) {
+    public func getArgBytes(pos: CInt) -> (ptr: UnsafePointer<CChar>?, len: size_t) {
         var outLength: size_t = 0
         let ptr = api.getArgBytes(pos, &outLength)
         return (ptr, outLength)
     }
     
-    public func getArgObject(pos: Int32, type: String) {
+    public func getArgObject(pos: CInt, type: String) {
 //        var type = type
 //        var outud: UnsafePointer<LuaUDObject>? = nil
 //        lua.getArgObject(pos, &type, &outud)
     }
     
-    public func getBitmap(pos: Int32) -> Image {
+    public func getBitmap(pos: CInt) -> Image {
         let ptr = api.getBitmap(pos)
         return Image(ptr)
     }
     
-    public func getSprite(pos: Int32) -> Sprite {
+    public func getSprite(pos: CInt) -> Sprite {
         let ptr = api.getSprite(pos)
         return Sprite(ptr)
     }
@@ -105,10 +106,10 @@ public class LuaAPI {
     }
     
     public func pushBool(_ value: Bool) {
-        api.pushBool(value ? 1 : 0)
+        api.pushBool(value.toCInt())
     }
     
-    public func pushInt(_ value: Int32) {
+    public func pushInt(_ value: CInt) {
         api.pushInt(value)
     }
     

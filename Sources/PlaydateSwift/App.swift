@@ -8,6 +8,8 @@ open class App {
         api.playdate.system.pointee.setUpdateCallback(_update, nil)
     }
     
+    open func setupLua() {}
+    
     @discardableResult
     open func update() -> Bool {
         onPushedButton(api.system.pushedButtonState)
@@ -46,5 +48,5 @@ open class App {
 public var app: App!
 
 func _update(_ : UnsafeMutableRawPointer?) -> CInt {
-    app.update() ? 1 : 0
+    app.update().toCInt()
 }

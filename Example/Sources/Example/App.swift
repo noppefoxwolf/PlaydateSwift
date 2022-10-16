@@ -4,9 +4,24 @@ import CPlaydate
 final class App: PlaydateSwift.App {
     override init(playdate: PlaydateAPI) {
         super.init(playdate: playdate)
-        api.display.refreshRate = 1
-        api.system.drawFPS(point: Point<Int32>(x: 0, y: 0))
+        setup()
         setupButtons()
+    }
+    
+    override func setupLua() {
+        do {
+            let version = try api.lua.callFunction(name: "playdate.apiVersion")
+            api.logToConsole(message: "playdate.apiVersion: \(version)")
+        } catch let error as CError {
+            api.logToConsole(message: error.description)
+        } catch {}
+    }
+    
+    func setup() {
+        api.display.refreshRate = 30
+        api.system.drawFPS(point: Point<Int32>(x: 0, y: 0))
+        let font = try! api.graphics.loadFont(path: "font/namco-1x")
+        api.graphics.setFont(font)
     }
     
     func setupButtons() {
@@ -28,6 +43,7 @@ final class App: PlaydateSwift.App {
     override func update() -> Bool {
         super.update()
         api.graphics.clear(.white)
+        
         api.graphics.drawText("Hello, World! \(api.system.elapsedTime)", at: .init(x: 64, y: 64))
         return true
     }
@@ -42,7 +58,7 @@ final class App: PlaydateSwift.App {
             let image = try api.graphics.loadImage(path: "background")
             api.graphics.drawImage(image)
         } catch let error as CError {
-            api.logToConsole(message: error.description)
+            api.error(message: error.description)
         } catch {}
     }
 }

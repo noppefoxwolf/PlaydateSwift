@@ -18,20 +18,20 @@ public class DisplayAPI {
         fatalError()
     }
     
-    public var height: Int32 {
+    public var height: CInt {
         api.getHeight()
     }
     
-    public var width: Int32 {
+    public var width: CInt {
         api.getWidth()
     }
     
-    public var size: Size<Int32> {
+    public var size: Size<CInt> {
         Size(width: width, height: height)
     }
     
-    public var rect: Rect<Int32> {
-        Rect(point: .init(x: 0, y: 0), size: size)
+    public var rect: Rect<CInt> {
+        Rect(point: .zero, size: size)
     }
     
     public var scale: ValidScale = .x1 {
@@ -42,27 +42,28 @@ public class DisplayAPI {
     
     public var inverted: Bool = false {
         didSet {
-            api.setInverted(inverted ? 1 : 0)
+            api.setInverted(inverted.toCInt())
         }
     }
     
     public var mosaic: Point<ValidMosaicValue> = .zero {
         didSet {
             api.setMosaic(
-                UInt32(mosaic.x.rawValue),
-                UInt32(mosaic.y.rawValue)
+                mosaic.x.cValue,
+                mosaic.y.cValue
             )
         }
     }
     
-    public var offset: Point<Int32> = .zero {
+    public var offset: Point<CInt> = .zero {
         didSet {
             api.setOffset(offset.x, offset.y)
         }
     }
     
     public func setFlipped(_ point: Point<Bool>) {
-        api.setFlipped(point.x ? 1 : 0, point.y ? 1: 0)
+        let CIntPoint = point.toCInt()
+        api.setFlipped(CIntPoint.x, CIntPoint.y)
     }
     
     public func loadImage(path: String) {

@@ -5,6 +5,10 @@ public enum ValidMosaicValue: Int {
     case x1 = 1
     case x2 = 2
     case x3 = 3
+    
+    var cValue: UInt32 {
+        UInt32(rawValue)
+    }
 }
 
 public enum ValidScale: Int {
@@ -53,7 +57,7 @@ extension Point where Value == UInt32 {
     public static var zero: Point<Value> = Point(x: 0, y: 0)
 }
 
-extension Point where Value == Int32 {
+extension Point where Value == CInt {
     public static var zero: Point<Value> = Point(x: 0, y: 0)
 }
 
@@ -61,6 +65,11 @@ extension Point where Value == ValidMosaicValue {
     public static var zero: Point<Value> = Point(x: .x0, y: .x0)
 }
 
+extension Point where Value == Bool {
+    func toCInt() -> Point<CInt> {
+        Point<CInt>(x: x.toCInt(), y: y.toCInt())
+    }
+}
 
 public struct Size<Value> {
     public init(width: Value, height: Value) {
@@ -205,6 +214,8 @@ open class Object {
 }
 
 open class Font: Object {}
+open class FontPage: Object {}
+open class FontGlyp: Object {}
 
 public enum Language: Int {
     case english
@@ -219,3 +230,5 @@ public enum Language: Int {
         UInt32(rawValue)
     }
 }
+
+open class VideoPlayer: Object {}

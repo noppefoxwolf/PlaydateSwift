@@ -43,10 +43,10 @@ public class SystemAPI {
     
     // https://sdk.play.date/1.12.3/Inside%20Playdate.html#f-playdate.getReduceFlashing
     public var reduceFlashing: Bool {
-        api.getReduceFlashing() == 1
+        api.getReduceFlashing().toBool()
     }
     
-    public func setMenuImage(_ image: Image, xOffset: Int32) {
+    public func setMenuImage(_ image: Image, xOffset: CInt) {
         api.setMenuImage(image.ptr, xOffset)
     }
 
@@ -55,7 +55,7 @@ public class SystemAPI {
     let ref = unsafeBitCast(self, to: UnsafeMutableRawPointer.self)
     system.addMenuItem(title: "hello", withTarget: ref, callback: { ref in
      let `self` = unsafeBitCast(ref!, to: App.self)
-     `self`.graphics.drawRect(Rect<Int32>(x: 10, y: 10, width: 100, height: 100), color: .black)
+     `self`.graphics.drawRect(Rect<CInt>(x: 10, y: 10, width: 100, height: 100), color: .black)
     })
     */
     @discardableResult
@@ -75,7 +75,7 @@ public class SystemAPI {
         withTarget target: UnsafeMutableRawPointer,
         callback: @convention(c) (UnsafeMutableRawPointer?) -> Void
     ) -> MenuItem {
-        let ptr = api.addCheckmarkMenuItem(title, value ? 1 : 0, callback, target)
+        let ptr = api.addCheckmarkMenuItem(title, value.toCInt(), callback, target)
         return MenuItem(ptr)
     }
     
@@ -88,7 +88,7 @@ public class SystemAPI {
     ) -> MenuItem {
         withArrayOfCStrings(optionTitles) { titles in
             var titles = titles
-            let ptr = api.addOptionsMenuItem(title, &titles, Int32(optionTitles.count), callback, target)
+            let ptr = api.addOptionsMenuItem(title, &titles, CInt(optionTitles.count), callback, target)
             return MenuItem(ptr)
         }
     }
@@ -101,11 +101,11 @@ public class SystemAPI {
         api.removeMenuItem(item.ptr)
     }
 
-    public func getMenuItemValue(_ item: MenuItem) -> Int32 {
+    public func getMenuItemValue(_ item: MenuItem) -> CInt {
         api.getMenuItemValue(item.ptr)
     }
     
-    public func setMenuItemValue(_ item: MenuItem, value: Int32) {
+    public func setMenuItemValue(_ item: MenuItem, value: CInt) {
         api.setMenuItemValue(item.ptr, value)
     }
     
@@ -126,7 +126,7 @@ public class SystemAPI {
         api.setMenuItemUserdata(item.ptr, userdata)
     }
     
-    public func drawFPS(point: Point<Int32>) {
+    public func drawFPS(point: Point<CInt>) {
         api.drawFPS(point.x, point.y)
     }
 }

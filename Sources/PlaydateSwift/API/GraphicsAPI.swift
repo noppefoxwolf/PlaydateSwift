@@ -2,15 +2,17 @@ import CPlaydate
 
 public class GraphicsAPI {
     public let api: playdate_graphics
+    public let video: VideoAPI
     
     init(api: playdate_graphics) {
         self.api = api
+        self.video = VideoAPI(api: api.video.pointee)
     }
 
     public func drawLine(
-        from: Point<Int32>,
-        to: Point<Int32>,
-        lineWidth: Int32 = 1,
+        from: Point<CInt>,
+        to: Point<CInt>,
+        lineWidth: CInt = 1,
         color: Color
     ) {
         api.drawLine(
@@ -30,10 +32,14 @@ public class GraphicsAPI {
     public func setDrawPixel() {
         fatalError()
     }
+    
+    public func setFont(_ font: Font) {
+        api.setFont(font.ptr)
+    }
 }
  
 extension GraphicsAPI {
-    public func drawRect(_ rect: Rect<Int32>, color: Color) {
+    public func drawRect(_ rect: Rect<CInt>, color: Color) {
         api.drawRect(
             rect.point.x,
             rect.point.y,
@@ -43,7 +49,7 @@ extension GraphicsAPI {
         )
     }
     
-    public func fillRect(_ rect: Rect<Int32>, color: Color) {
+    public func fillRect(_ rect: Rect<CInt>, color: Color) {
         api.fillRect(
             rect.point.x,
             rect.point.y,
@@ -55,41 +61,41 @@ extension GraphicsAPI {
 }
 
 extension GraphicsAPI {
-    public func drawRoundRect(_ rect: Rect<Int32>, color: Color) {
+    public func drawRoundRect(_ rect: Rect<CInt>, color: Color) {
         fatalError()
     }
     
-    public func fillRoundRect(_ rect: Rect<Int32>, color: Color) {
+    public func fillRoundRect(_ rect: Rect<CInt>, color: Color) {
         fatalError()
     }
 }
 
 extension GraphicsAPI {
-    public func drawArc(_ rect: Rect<Int32>, color: Color) {
+    public func drawArc(_ rect: Rect<CInt>, color: Color) {
         fatalError()
     }
 }
  
 extension GraphicsAPI {
-    public func drawCircle(at point: Point<Int32>, radius: Int, color: Color) {
+    public func drawCircle(at point: Point<CInt>, radius: Int, color: Color) {
         fatalError()
     }
     
-    public func drawCircle(in rect: Rect<Int32>, color: Color) {
+    public func drawCircle(in rect: Rect<CInt>, color: Color) {
         fatalError()
     }
     
-    public func fillCircle(at point: Point<Int32>, radius: Int, color: Color) {
+    public func fillCircle(at point: Point<CInt>, radius: Int, color: Color) {
         fatalError()
     }
     
-    public func fillCircle(in rect: Rect<Int32>, color: Color) {
+    public func fillCircle(in rect: Rect<CInt>, color: Color) {
         fatalError()
     }
 }
 
 extension GraphicsAPI {
-    public func newImage(width: Int32, height: Int32, color: Color) -> Image {
+    public func newImage(width: CInt, height: CInt, color: Color) -> Image {
         let ptr = api.newBitmap(width, height, .init(color.cValue))
         return Image(ptr)
     }
@@ -104,7 +110,7 @@ extension GraphicsAPI {
         return Image(ptr)
     }
     
-    public func drawImage(_ image: Image, point: Point<Int32> = .zero, flip: BitmapFlip = .unflipped) {
+    public func drawImage(_ image: Image, point: Point<CInt> = .zero, flip: BitmapFlip = .unflipped) {
         api.drawBitmap(image.ptr, point.x, point.y, LCDBitmapFlip(flip.cValue))
     }
     
@@ -112,11 +118,11 @@ extension GraphicsAPI {
         api.clearBitmap(image.ptr, .init(color.cValue))
     }
     
-    public func drawScaledImage(_ image: Image, point: Point<Int32>, scaleX: Float, scaleY: Float) {
+    public func drawScaledImage(_ image: Image, point: Point<CInt>, scaleX: Float, scaleY: Float) {
         api.drawScaledBitmap(image.ptr, point.x, point.y, scaleX, scaleY)
     }
     
-    public func drawRotatedImage(_ image: Image, point: Point<Int32>, rotation: Float, centerX: Float, centery: Float, xScale: Float, yScale: Float) {
+    public func drawRotatedImage(_ image: Image, point: Point<CInt>, rotation: Float, centerX: Float, centery: Float, xScale: Float, yScale: Float) {
         api.drawRotatedBitmap(image.ptr, point.x, point.y, rotation, centery, centery, xScale, yScale)
     }
 }
@@ -124,7 +130,7 @@ extension GraphicsAPI {
 // Fonts & Text
 extension GraphicsAPI {
     @discardableResult
-    public func drawText(_ text: String, encoding: StringEncoding = .utf8, at point: Point<Int32>) -> Int32 {
+    public func drawText(_ text: String, encoding: StringEncoding = .utf8, at point: Point<CInt>) -> CInt {
         api.drawText(
             text,
             text.count,
@@ -132,6 +138,28 @@ extension GraphicsAPI {
             point.x,
             point.y
         )
+    }
+    
+    public func getFontHeight(_ font: Font) -> UInt8 {
+        api.getFontHeight(font.ptr)
+    }
+    
+    public func getFontPage(_ font: Font, characterCode: UInt32) -> FontPage {
+        FontPage(api.getFontPage(font.ptr, characterCode))
+    }
+    
+    public func getPageGlyph(_ page: FontPage, characterCode: UInt32) -> Image {
+        fatalError()
+    }
+    
+    public func loadFont(path: String) throws -> Font {
+        var outerr: UnsafePointer<CChar>? = nil
+        let ptr = api.loadFont(path, &outerr)
+        if let outerr {
+            let err = String(cString: outerr)
+            throw CError(err: err)
+        }
+        return Font(ptr)
     }
 }
 

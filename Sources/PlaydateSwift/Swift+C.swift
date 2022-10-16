@@ -34,3 +34,15 @@ public func scan<S : Sequence, U>(_ seq: S, _ initial: U, _ combine: (U, S.Itera
     }
     return result
 }
+
+extension Bool {
+    func toCInt() -> CInt {
+        self ? 1 : 0
+    }
+}
+
+extension CInt {
+    func toBool() -> Bool {
+        self == 1
+    }
+}
