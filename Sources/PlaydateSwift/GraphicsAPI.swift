@@ -1,7 +1,7 @@
 import CPlaydate
 
-public struct Graphics {
-    public let graphics: playdate_graphics
+public struct GraphicsAPI {
+    public let api: playdate_graphics
     
     public func drawLine(
         from: Point<Int32>,
@@ -9,7 +9,7 @@ public struct Graphics {
         lineWidth: Int32 = 1,
         color: Color
     ) {
-        graphics.drawLine(
+        api.drawLine(
             from.x,
             to.x,
             from.y,
@@ -20,7 +20,7 @@ public struct Graphics {
     }
     
     public func setLiveCapStyle(_ style: LineCapStyle) {
-        graphics.setLineCapStyle(style.cStyle)
+        api.setLineCapStyle(style.cStyle)
     }
     
     public func setDrawPixel() {
@@ -28,9 +28,9 @@ public struct Graphics {
     }
 }
  
-extension Graphics {
+extension GraphicsAPI {
     public func drawRect(_ rect: Rect<Int32>, color: Color) {
-        graphics.drawRect(
+        api.drawRect(
             rect.point.x,
             rect.point.y,
             rect.size.width,
@@ -40,7 +40,7 @@ extension Graphics {
     }
     
     public func fillRect(_ rect: Rect<Int32>, color: Color) {
-        graphics.fillRect(
+        api.fillRect(
             rect.point.x,
             rect.point.y,
             rect.size.width,
@@ -50,7 +50,7 @@ extension Graphics {
     }
 }
 
-extension Graphics {
+extension GraphicsAPI {
     public func drawRoundRect(_ rect: Rect<Int32>, color: Color) {
         fatalError()
     }
@@ -60,13 +60,13 @@ extension Graphics {
     }
 }
 
-extension Graphics {
+extension GraphicsAPI {
     public func drawArc(_ rect: Rect<Int32>, color: Color) {
         fatalError()
     }
 }
  
-extension Graphics {
+extension GraphicsAPI {
     public func drawCircle(at point: Point<Int32>, radius: Int, color: Color) {
         fatalError()
     }
@@ -84,15 +84,15 @@ extension Graphics {
     }
 }
 
-extension Graphics {
+extension GraphicsAPI {
     public func newImage(width: Int32, height: Int32, color: Color) -> Image {
-        let ptr = graphics.newBitmap(width, height, .init(color.cValue))
+        let ptr = api.newBitmap(width, height, .init(color.cValue))
         return Image(ptr)
     }
     
     public func loadImage(path: String) throws -> Image {
         var outerr: UnsafePointer<CChar>? = nil
-        let ptr = graphics.loadBitmap(path, &outerr)
+        let ptr = api.loadBitmap(path, &outerr)
         if let outerr {
             let err = String(cString: outerr)
             throw CError(err: err)
@@ -101,19 +101,19 @@ extension Graphics {
     }
     
     public func drawImage(_ image: Image, point: Point<Int32> = .zero, flip: BitmapFlip = .unflipped) {
-        graphics.drawBitmap(image.ptr, point.x, point.y, LCDBitmapFlip(flip.cValue))
+        api.drawBitmap(image.ptr, point.x, point.y, LCDBitmapFlip(flip.cValue))
     }
     
     public func clear(_ image: Image, color: Color) {
-        graphics.clearBitmap(image.ptr, .init(color.cValue))
+        api.clearBitmap(image.ptr, .init(color.cValue))
     }
     
     public func drawScaledImage(_ image: Image, point: Point<Int32>, scaleX: Float, scaleY: Float) {
-        graphics.drawScaledBitmap(image.ptr, point.x, point.y, scaleX, scaleY)
+        api.drawScaledBitmap(image.ptr, point.x, point.y, scaleX, scaleY)
     }
     
     public func drawRotatedImage(_ image: Image, point: Point<Int32>, rotation: Float, centerX: Float, centery: Float, xScale: Float, yScale: Float) {
-        graphics.drawRotatedBitmap(image.ptr, point.x, point.y, rotation, centery, centery, xScale, yScale)
+        api.drawRotatedBitmap(image.ptr, point.x, point.y, rotation, centery, centery, xScale, yScale)
     }
 }
 

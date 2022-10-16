@@ -1,12 +1,12 @@
 import CPlaydate
 
 // https://sdk.play.date/1.12.3/#M-display
-public struct Display {
-    public let display: playdate_display
+public struct DisplayAPI {
+    public let api: playdate_display
     
     public var refreshRate: Int = 30 {
         didSet {
-            display.setRefreshRate(Float(refreshRate))
+            api.setRefreshRate(Float(refreshRate))
         }
     }
     
@@ -15,11 +15,11 @@ public struct Display {
     }
     
     public var height: Int32 {
-        display.getHeight()
+        api.getHeight()
     }
     
     public var width: Int32 {
-        display.getWidth()
+        api.getWidth()
     }
     
     public var size: Size<Int32> {
@@ -32,19 +32,19 @@ public struct Display {
     
     public var scale: ValidScale = .x1 {
         didSet {
-            display.setScale(UInt32(scale.rawValue))
+            api.setScale(UInt32(scale.rawValue))
         }
     }
     
     public var inverted: Bool = false {
         didSet {
-            display.setInverted(inverted ? 1 : 0)
+            api.setInverted(inverted ? 1 : 0)
         }
     }
     
     public var mosaic: Point<ValidMosaicValue> = .zero {
         didSet {
-            display.setMosaic(
+            api.setMosaic(
                 UInt32(mosaic.x.rawValue),
                 UInt32(mosaic.y.rawValue)
             )
@@ -53,12 +53,12 @@ public struct Display {
     
     public var offset: Point<Int32> = .zero {
         didSet {
-            display.setOffset(offset.x, offset.y)
+            api.setOffset(offset.x, offset.y)
         }
     }
     
     public func setFlipped(_ point: Point<Bool>) {
-        display.setFlipped(point.x ? 1 : 0, point.y ? 1: 0)
+        api.setFlipped(point.x ? 1 : 0, point.y ? 1: 0)
     }
     
     public func loadImage(path: String) {

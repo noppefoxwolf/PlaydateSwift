@@ -2,17 +2,19 @@ import CPlaydate
 
 public class API {
     public var playdate: PlaydateAPI
-    public let system: System
-    public let display: Display
-    public let graphics: Graphics
-    public let lua: Lua
+    public let system: SystemAPI
+    public let display: DisplayAPI
+    public let graphics: GraphicsAPI
+    public let lua: LuaAPI
+    public let sprite: SpriteAPI
     
     public init(playdate: PlaydateAPI) {
         self.playdate = playdate
-        self.system = System(system: playdate.system.pointee)
-        self.display = Display(display: playdate.display.pointee)
-        self.graphics = Graphics(graphics: playdate.graphics.pointee)
-        self.lua = Lua(lua: playdate.lua.pointee)
+        self.system = SystemAPI(api: playdate.system.pointee)
+        self.display = DisplayAPI(api: playdate.display.pointee)
+        self.graphics = GraphicsAPI(api: playdate.graphics.pointee)
+        self.lua = LuaAPI(api: playdate.lua.pointee)
+        self.sprite = SpriteAPI(api: playdate.sprite.pointee)
     }
     
     public func logToConsole(message: String) {

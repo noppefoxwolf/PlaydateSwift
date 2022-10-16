@@ -28,6 +28,17 @@ public struct Rect<Value> {
     public let size: Size<Value>
 }
 
+extension Rect where Value == Float {
+    init(_ rect: PDRect) {
+        self.point = .init(x: rect.x, y: rect.y)
+        self.size = .init(width: rect.width, height: rect.height)
+    }
+    
+    func toPD() -> PDRect {
+        PDRect(x: point.x, y: point.y, width: size.width, height: size.height)
+    }
+}
+
 public struct Point<Value> {
     public init(x: Value, y: Value) {
         self.x = x
@@ -139,7 +150,7 @@ open class Image {
     }
 }
 
-open class Sprite {
+open class LCDSprite {
     let ptr: OpaquePointer?
     
     init(_ ptr: OpaquePointer?) {

@@ -1,49 +1,49 @@
 import CPlaydate
 
-public struct System {
-    public let system: playdate_sys
+public struct SystemAPI {
+    public let api: playdate_sys
     
     public var currentButtonState: Button {
         var buttons = PDButtons(rawValue: .max)
-        system.getButtonState(&buttons, nil, nil)
+        api.getButtonState(&buttons, nil, nil)
         return .init(buttons)
     }
     
     public var pushedButtonState: Button {
         var buttons = PDButtons(rawValue: .max)
-        system.getButtonState(nil, &buttons, nil)
+        api.getButtonState(nil, &buttons, nil)
         return .init(buttons)
     }
     
     public var releasedButtonState: Button {
         var buttons = PDButtons(rawValue: .max)
-        system.getButtonState(nil, nil, &buttons)
+        api.getButtonState(nil, nil, &buttons)
         return .init(buttons)
     }
     
     public var batteryVoltage: Float {
-        system.getBatteryVoltage()
+        api.getBatteryVoltage()
     }
     
     public var batteryPercentage: Float {
-        system.getBatteryPercentage()
+        api.getBatteryPercentage()
     }
     
     public var elapsedTime: Float {
-        system.getElapsedTime()
+        api.getElapsedTime()
     }
     
     public func resetElapsedTime() {
-        system.resetElapsedTime()
+        api.resetElapsedTime()
     }
     
     // https://sdk.play.date/1.12.3/Inside%20Playdate.html#f-playdate.getReduceFlashing
     public var reduceFlashing: Bool {
-        system.getReduceFlashing() == 1
+        api.getReduceFlashing() == 1
     }
     
     public func setMenuImage(_ image: Image, xOffset: Int32) {
-        system.setMenuImage(image.ptr, xOffset)
+        api.setMenuImage(image.ptr, xOffset)
     }
 
     /// Example
@@ -60,7 +60,7 @@ public struct System {
         withTarget target: UnsafeMutableRawPointer,
         callback: @convention(c) (UnsafeMutableRawPointer?) -> Void
     ) -> MenuItem {
-        let ptr = system.addMenuItem(title, callback, target)
+        let ptr = api.addMenuItem(title, callback, target)
         return MenuItem(ptr)
     }
     
@@ -71,7 +71,7 @@ public struct System {
         withTarget target: UnsafeMutableRawPointer,
         callback: @convention(c) (UnsafeMutableRawPointer?) -> Void
     ) -> MenuItem {
-        let ptr = system.addCheckmarkMenuItem(title, value ? 1 : 0, callback, target)
+        let ptr = api.addCheckmarkMenuItem(title, value ? 1 : 0, callback, target)
         return MenuItem(ptr)
     }
     
@@ -84,46 +84,46 @@ public struct System {
     ) -> MenuItem {
         withArrayOfCStrings(optionTitles) { titles in
             var titles = titles
-            let ptr = system.addOptionsMenuItem(title, &titles, Int32(optionTitles.count), callback, target)
+            let ptr = api.addOptionsMenuItem(title, &titles, Int32(optionTitles.count), callback, target)
             return MenuItem(ptr)
         }
     }
     
     public func removeAllMenuItems() {
-        system.removeAllMenuItems()
+        api.removeAllMenuItems()
     }
     
     public func removeMenuItem(_ item: MenuItem) {
-        system.removeMenuItem(item.ptr)
+        api.removeMenuItem(item.ptr)
     }
 
     public func getMenuItemValue(_ item: MenuItem) -> Int32 {
-        system.getMenuItemValue(item.ptr)
+        api.getMenuItemValue(item.ptr)
     }
     
     public func setMenuItemValue(_ item: MenuItem, value: Int32) {
-        system.setMenuItemValue(item.ptr, value)
+        api.setMenuItemValue(item.ptr, value)
     }
     
     public func getMenuItemTitle(_ item: MenuItem) -> String {
-        String(cString: system.getMenuItemTitle(item.ptr)!)
+        String(cString: api.getMenuItemTitle(item.ptr)!)
     }
     
     public func setMenuItemTitle(_ item: MenuItem, title: String) {
-        system.setMenuItemTitle(item.ptr, title)
+        api.setMenuItemTitle(item.ptr, title)
     }
     
     // TODO: userdata structure
     public func getMenuItemUserdata(_ item: MenuItem) -> UnsafeMutableRawPointer? {
-        system.getMenuItemUserdata(item.ptr)
+        api.getMenuItemUserdata(item.ptr)
     }
     
     public func setMenuItemUserdata(_ item: MenuItem, userdata: UnsafeMutableRawPointer?) {
-        system.setMenuItemUserdata(item.ptr, userdata)
+        api.setMenuItemUserdata(item.ptr, userdata)
     }
     
     public func drawFPS(point: Point<Int32>) {
-        system.drawFPS(point.x, point.y)
+        api.drawFPS(point.x, point.y)
     }
     
     public func lua() {
