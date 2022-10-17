@@ -5,10 +5,11 @@ open class App {
     
     public init(playdate: PlaydateAPI) {
         api = API(playdate: playdate)
-        api.playdate.system.pointee.setUpdateCallback(_update, nil)
     }
     
-    open func setupLua() {}
+    open func setup() {
+        api.system.setUpdateCallback(_update)
+    }
     
     @discardableResult
     open func update() -> Bool {

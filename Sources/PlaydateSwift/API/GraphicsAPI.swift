@@ -1,5 +1,6 @@
 import CPlaydate
 
+// https://sdk.play.date/1.12.3/#M-graphics
 public class GraphicsAPI {
     public let api: playdate_graphics
     public let video: VideoAPI
@@ -124,6 +125,15 @@ extension GraphicsAPI {
     
     public func drawRotatedImage(_ image: Image, point: Point<CInt>, rotation: Float, centerX: Float, centery: Float, xScale: Float, yScale: Float) {
         api.drawRotatedBitmap(image.ptr, point.x, point.y, rotation, centery, centery, xScale, yScale)
+    }
+    
+    public func getBitmapData(_ image: Image) -> (width: CInt, height: CInt) {
+        //LCDBitmap* bitmap, int* width, int* height, int* rowbytes, uint8_t** mask, uint8_t** data
+        var width: CInt = 0
+        var height: CInt = 0
+        // TODO: rowbytes, mask, data
+        api.getBitmapData(image.ptr, &width, &height, nil, nil, nil)
+        return (width, height)
     }
 }
 

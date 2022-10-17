@@ -206,9 +206,9 @@ public enum StringEncoding: Int {
 }
 
 open class Object {
-    let ptr: OpaquePointer?
+    public let ptr: OpaquePointer?
     
-    init(_ ptr: OpaquePointer?) {
+    public init(_ ptr: OpaquePointer?) {
         self.ptr = ptr
     }
 }

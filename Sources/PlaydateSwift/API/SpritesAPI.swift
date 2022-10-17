@@ -43,7 +43,7 @@ public class SpriteAPI {
         return Point(x: x, y: y)
     }
     
-    public func setImage(_ image: Image, to sprite: Sprite, flip: BitmapFlip) {
+    public func setImage(_ image: Image, to sprite: Sprite, flip: BitmapFlip = .unflipped) {
         api.setImage(sprite.ptr, image.ptr, .init(flip.cValue))
     }
     
@@ -81,5 +81,46 @@ public class SpriteAPI {
     
     public func getImageFlip(_ sprite: Sprite) -> BitmapFlip {
         .init(api.getImageFlip(sprite.ptr))
+    }
+    
+    public func getSpriteCount() -> Int32 {
+        api.getSpriteCount()
+    }
+    
+    public func updateAndDrawSprites() {
+        api.updateAndDrawSprites()
+    }
+    
+    public func addSprite(_ sprite: Sprite) {
+        api.addSprite(sprite.ptr)
+    }
+    
+    public func removeSprite(_ sprite: Sprite) {
+        api.removeSprite(sprite.ptr)
+    }
+    
+    public func setCollideRect(_ rect: Rect<Float>, to sprite: Sprite) {
+        api.setCollideRect(sprite.ptr, rect.toPD())
+    }
+    
+    // handler: (sprite, other) -> Type
+    public func setCollisionResponseFunction(
+        _ sprite: Sprite,
+        handler: (@convention(c) (OpaquePointer?, OpaquePointer?) -> SpriteCollisionResponseType)?
+    ) {
+        api.setCollisionResponseFunction(sprite.ptr, handler)
+    }
+    
+    // handler: (Sprite pointer) -> Void
+    public func setUpdateFunction(_ sprite: Sprite, handler: (@convention(c) (OpaquePointer?) -> Void)?) {
+        api.setUpdateFunction(sprite.ptr, handler)
+    }
+    
+    public func setDrawFunction(_ sprite: Sprite, handler: (@convention(c) (OpaquePointer?, PDRect, PDRect) -> Void)?) {
+        api.setDrawFunction(sprite.ptr, handler)
+    }
+    
+    public func markDirty(_ sprite: Sprite) {
+        api.markDirty(sprite.ptr)
     }
 }

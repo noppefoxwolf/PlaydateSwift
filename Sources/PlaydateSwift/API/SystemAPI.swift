@@ -129,6 +129,13 @@ public class SystemAPI {
     public func drawFPS(point: Point<CInt>) {
         api.drawFPS(point.x, point.y)
     }
+    
+    public func setUpdateCallback(
+        _ handler: (@convention(c) (UnsafeMutableRawPointer?) -> Int32)?,
+        withTarget target: UnsafeMutableRawPointer? = nil
+    ) {
+        api.setUpdateCallback(handler, target)
+    }
 }
 
 

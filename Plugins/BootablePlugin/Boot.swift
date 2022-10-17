@@ -6,8 +6,9 @@ func eventCallback(playdate: PlaydateAPI, event: SystemEvent) {
     switch event {
     case .initialize:
         app = App(playdate: playdate)
+        app.setup()
     case .initializeLua:
-        app.setupLua()
+        break
     default:
         break
     }
