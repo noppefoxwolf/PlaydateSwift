@@ -34,7 +34,8 @@ let package = Package(
         
         .plugin(
             name: "BootablePlugin",
-            capability: .buildTool()
+            capability: .buildTool(),
+            exclude: ["Boot.swift"]
         ),
     ]
 )
