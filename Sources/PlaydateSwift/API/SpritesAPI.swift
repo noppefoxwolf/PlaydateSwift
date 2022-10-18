@@ -123,4 +123,53 @@ public class SpriteAPI {
     public func markDirty(_ sprite: Sprite) {
         api.markDirty(sprite.ptr)
     }
+    
+    public func moveWithCollisions(_ sprite: Sprite, goal: Point<Float>) -> [SpriteCollisionInfo] {
+        var actualX: Float = 0
+        var actualY: Float = 0
+        var length: CInt = 0
+        guard let result = api.moveWithCollisions(
+            sprite.ptr,
+            goal.x, // goalX
+            goal.y, // goalY
+            &actualX, // float *actualX
+            &actualY, // float *actualY
+            &length // int *len
+        ) else { return [] }
+        var infos: [SpriteCollisionInfo] = []
+        for i in 0..<length {
+            infos.append(SpriteCollisionInfo(info: result[Int(i)]))
+        }
+        return infos
+    }
+    
+    public func getfra() {
+        
+    }
+}
+
+public class SpriteCollisionInfo {
+    internal init(info: CPlaydate.SpriteCollisionInfo) {
+        self.sprite = Sprite(info.sprite)
+        self.other = Sprite(info.other)
+        self.responseType = info.responseType
+        self.overlaps = info.overlaps
+        self.ti = info.ti
+        self.move = info.move
+        self.normal = info.normal
+        self.touch = info.touch
+        self.spriteRect = info.spriteRect
+        self.otherRect = info.otherRect
+    }
+    
+    public var sprite: Sprite
+    public var other: Sprite
+    public var responseType: SpriteCollisionResponseType 
+    public var overlaps: UInt8
+    public var ti: Float
+    public var move: CollisionPoint
+    public var normal: CollisionVector
+    public var touch: CollisionPoint
+    public var spriteRect: PDRect
+    public var otherRect: PDRect
 }

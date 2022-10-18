@@ -205,11 +205,19 @@ public enum StringEncoding: Int {
     }
 }
 
-open class Object {
+open class Object: Hashable {
     public let ptr: OpaquePointer?
     
     public init(_ ptr: OpaquePointer?) {
         self.ptr = ptr
+    }
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(ptr?.hashValue)
+    }
+    
+    public static func == (lhs: Object, rhs: Object) -> Bool {
+        lhs.hashValue == rhs.hashValue
     }
 }
 

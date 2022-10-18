@@ -30,10 +30,6 @@ final class App: PlaydateSwift.App {
     override func update() -> Bool {
         super.update()
         
-//        if playdate.buttonJustPressed("B") or playdate.buttonJustPressed("A") then
-//                playerFire()
-//            end
-//
         spawnEnemyIfNeeded()
         spawnBackgroundPlaneIfNeeded()
         
@@ -83,19 +79,16 @@ final class App: PlaydateSwift.App {
             }
             this.api.sprite.move(plane, by: Point<Float>(x: dx, y: dy))
             
-            
-            //
-            //            local actualX, actualY, collisions, length = plane:moveWithCollisions(plane.x + dx, plane.y + dy)
-            //            for i = 1, length do
-            //                local collision = collisions[i]
-            //                if collision.other.isEnemy == true then    -- crashed into enemy plane
-            //                    destroyEnemyPlane(collision.other)
-            //                    collision.other:remove()
-            //                    score -= 1
-            //                end
-            //            end
-            //
-            //        end
+            let position = app.api.sprite.getPosition(plane)
+            let goal = Point<Float>(x: position.x + dx, y: position.y + dy)
+            let collisions = this.api.sprite.moveWithCollisions(plane, goal: goal)
+            for collision in collisions {
+                if this.api.sprite.isEnemy(collision.other) {
+                    this.destroyEnemyPlane(collision.other)
+                    this.api.sprite.removeSprite(collision.other)
+                    this.score -= 1
+                }
+            }
         }
         
         api.sprite.setZIndex(1000, to: plane)
@@ -221,26 +214,105 @@ final class App: PlaydateSwift.App {
     }
     
     override func onPushedAButton() {
-        let rect = Rect<Int32>(x: 50, y: 50, width: 10, height: 10)
-        api.graphics.drawRect(rect, color: .black)
+        playerFire()
     }
     
     override func onPushedBButton() {
-        do {
-            let image = try api.graphics.loadImage(path: "background")
-            api.graphics.drawImage(image)
-        } catch let error as CError {
-            api.error(message: error.description)
-        } catch {}
+        playerFire()
+    }
+    
+    func playerFire() {
+        let s = api.sprite.newSprite()
+        let img = try! api.graphics.loadImage(path: "doubleBullet")
+        let size = app.api.graphics.getBitmapData(img)
+        api.sprite.setImage(img, to: s)
+        let playerPosition = api.sprite.getPosition(player)
+        api.sprite.move(s, to: playerPosition)
+        api.sprite.setCollideRect(Rect<Float>(x: 0, y: 0, width: Float(size.width), height: Float(size.height)), to: s)
+        api.sprite.setCollisionResponseFunction(s, handler: { _, _ in
+            kCollisionTypeOverlap
+        })
+        api.sprite.setUpdateFunction(s) { ptr in
+            let this = (app as! App)
+            let s = Sprite(ptr)
+            let sPosition = this.api.sprite.getPosition(s)
+            let img = this.api.sprite.getImage(s)
+            let imgSize = this.api.graphics.getBitmapData(img)
+            let newY = sPosition.y - 20
+            if newY < -Float(imgSize.height) {
+                this.api.sprite.removeSprite(s)
+            } else {
+                let goal = Point<Float>(x: sPosition.x, y: newY)
+                let collisions = this.api.sprite.moveWithCollisions(s, goal: goal)
+                for collision in collisions {
+                    if this.api.sprite.isEnemy(collision.other) {
+                        this.destroyEnemyPlane(collision.other)
+                        this.api.sprite.removeSprite(s)
+                        this.score += 1
+                    }
+                }
+            }
+
+        }
+        api.sprite.setZIndex(999, to: s)
+        api.sprite.addSprite(s)
+    }
+    
+    func destroyEnemyPlane(_ plane: Sprite) {
+        let posision = api.sprite.getPosition(plane)
+        createExplosion(at: posision)
+        api.sprite.removeSprite(plane)
+        enemyCount -= 1
+    }
+    
+    func createExplosion(at point: Point<Float>) {
+        let s = api.sprite.newSprite()
+        api.sprite.setFrame(s, frame: 1)
+        let frame = api.sprite.getFrame(s)
+        let img = try! api.graphics.loadImage(path: "explosion/\(frame)")
+        api.sprite.setImage(img, to: s)
+        api.sprite.move(s, to: point)
+            
+        api.sprite.setUpdateFunction(s) { ptr in
+            let this = (app as! App)
+            let s = Sprite(ptr)
+            let newFrame = this.api.sprite.getFrame(s) + 1
+            this.api.sprite.setFrame(s, frame: newFrame)
+            
+            if newFrame > 11 {
+                this.api.sprite.removeSprite(s)
+            } else {
+                if let img = try? this.api.graphics.loadImage(path: "explosion/\(newFrame)") {
+                    this.api.sprite.setImage(img, to: s)
+                }
+            }
+        }
+
+        api.sprite.setZIndex(2000, to: s)
+        api.sprite.addSprite(s)
     }
 }
 
 extension SpriteAPI {
+    static var enemyFlags: [Sprite : Bool] = [:]
+    
     func isEnemy(_ sprite: Sprite) -> Bool {
-        api.getTag(sprite.ptr) == 1
+        Self.enemyFlags[sprite] ?? false
     }
     
     func setIsEnemy(_ sprite: Sprite, flag: Bool) {
-        api.setTag(sprite.ptr, flag ? 1 : 0)
+        Self.enemyFlags[sprite] = flag
+    }
+}
+
+extension SpriteAPI {
+    static var frame: [Sprite : CInt] = [:]
+    
+    func getFrame(_ sprite: Sprite) -> CInt {
+        Self.frame[sprite] ?? 0
+    }
+    
+    func setFrame(_ sprite: Sprite, frame: CInt) {
+        Self.frame[sprite] = frame
     }
 }
