@@ -1,3 +1,5 @@
 # Example
 
-A description of this package.
+```
+$ swift package --disable-sandbox pdc --run
+```
