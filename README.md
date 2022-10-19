@@ -1,3 +1,5 @@
 # PlaydateSwift
 
-A description of this package.
+
+
+Inspired by [swift-playdate](https://github.com/ericlewis/swift-playdate)
